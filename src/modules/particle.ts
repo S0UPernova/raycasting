@@ -33,9 +33,11 @@ export class Particle {
     this.pos.setY(y)
   }
 
-  look(walls: any) {
-    let arrOfClosests: Array<object> = []
-    for (let ray of this.rays) {
+  look(walls: Array<Boundary>) {
+    // ? maybe make this an object with the keys being the walls,
+    // ? and the values being an array of the points.
+    let arrOfClosests: Array<object[]> = []
+    for (const ray of this.rays) {
       let record = Infinity
       let closest = null
       for (let wall of walls) {
@@ -51,8 +53,18 @@ export class Particle {
           // wall.show()
         }
       }
-      arrOfClosests.push({ closest })
+      // console.log(ray)
       if (this.ctx && closest) {
+        let key: number = closest.wall.id
+        if (arrOfClosests.hasOwnProperty(key)) {
+          arrOfClosests[key].push(closest)
+        } else {
+          arrOfClosests[key] = [closest]
+
+        }
+        // arrOfClosests.push({ closest })
+        // console.log(arrOfClosests)
+
         this.ctx.strokeStyle = 'grey'
         this.ctx.beginPath()
         this.ctx.moveTo(this.pos.x, this.pos.y)
@@ -64,34 +76,25 @@ export class Particle {
     this.seeWalls(arrOfClosests)
   }
   private seeWalls(arrOffClosests: any) {
-    // work in progress on speeding this up
-    // let wallArrs: any = {}
-    // for (let i = 0; i < arrOffClosests.length; i++) {
-    //   let id: string 
-    //   if (arrOffClosests[i]?.closest?.wall?.id) {
-
-    //     id = `${arrOffClosests[i].closest.wall.id}`
-    //       if (wallArrs?.[id]) {
-    //         console.log("has Id")
-    //       } else if (wallArrs?.[id]) {
-    //         wallArrs[id] = [`${arrOffClosests[i].closest.wall.id}`] //= [`${arrOffClosests[i].closest.wall.id}`]
-    //       }
-    //   }
-    // }
-    // wallArrs !== {} && console.log(wallArrs)
-
+    // filters out empty indices
+    arrOffClosests.filter((index: Array<object>) => {
+      return index
+    })
     for (let i = 0; i < arrOffClosests.length; i++) {
-      for (let j = 0; j < arrOffClosests.length; j++) {
-        if (arrOffClosests[i]?.closest?.wall?.id === arrOffClosests[j]?.closest?.wall?.id
-          && arrOffClosests[i]?.closest?.pt
-          && arrOffClosests[j]?.closest?.pt) {
-          this.ctx.strokeStyle = "red"
+      if (arrOffClosests?.[i]) {
+      for(let j = 0; j < arrOffClosests[i].length; j++) {
+        if(arrOffClosests?.[i]?.[j]?.pt && arrOffClosests?.[i]?.[j + 1]?.pt) {
+
+          this.ctx.strokeStyle = 'red'
+          // console.log(arrOffClosests[j])
           this.ctx.beginPath()
-          this.ctx.moveTo(arrOffClosests[i].closest.pt.x, arrOffClosests[i].closest.pt.y)
-          this.ctx.lineTo(arrOffClosests[j].closest.pt.x, arrOffClosests[j].closest.pt.y)
+          this.ctx.moveTo(arrOffClosests[i][j].pt.x, arrOffClosests[i][j].pt.y)
+          this.ctx.lineTo(arrOffClosests[i][j + 1].pt.x, arrOffClosests[i][j + 1].pt.y)
           this.ctx.stroke()
           this.ctx.closePath()
         }
+      }
+
       }
     }
   }
