@@ -56,7 +56,7 @@ setup()
 
 function draw() {
   for (let wall of walls) {
-    wall.show()
+    // wall.show()
     particle.look(walls)
   }
   if (ctx) {

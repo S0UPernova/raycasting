@@ -53,18 +53,14 @@ export class Particle {
           // wall.show()
         }
       }
-      // console.log(ray)
       if (this.ctx && closest) {
         let key: number = closest.wall.id
         if (arrOfClosests.hasOwnProperty(key)) {
           arrOfClosests[key].push(closest)
         } else {
           arrOfClosests[key] = [closest]
-
         }
-        // arrOfClosests.push({ closest })
-        // console.log(arrOfClosests)
-
+        // ray.show()
         this.ctx.strokeStyle = 'grey'
         this.ctx.beginPath()
         this.ctx.moveTo(this.pos.x, this.pos.y)
@@ -76,17 +72,11 @@ export class Particle {
     this.seeWalls(arrOfClosests)
   }
   private seeWalls(arrOffClosests: any) {
-    // filters out empty indices
-    arrOffClosests.filter((index: Array<object>) => {
-      return index
-    })
     for (let i = 0; i < arrOffClosests.length; i++) {
       if (arrOffClosests?.[i]) {
       for(let j = 0; j < arrOffClosests[i].length; j++) {
         if(arrOffClosests?.[i]?.[j]?.pt && arrOffClosests?.[i]?.[j + 1]?.pt) {
-
           this.ctx.strokeStyle = 'red'
-          // console.log(arrOffClosests[j])
           this.ctx.beginPath()
           this.ctx.moveTo(arrOffClosests[i][j].pt.x, arrOffClosests[i][j].pt.y)
           this.ctx.lineTo(arrOffClosests[i][j + 1].pt.x, arrOffClosests[i][j + 1].pt.y)
@@ -101,10 +91,7 @@ export class Particle {
 
   show() {
     if (this.ctx) {
-      this.ctx.fillRect(this.pos.x, this.pos.y, 8, 8)
-      // this.ctx.beginPath();
-      // this.ctx.arc(this.pos.x, this.pos.y, 8, 0, 2 * Math.PI);
-      // this.ctx.fill()
+      // this.ctx.fillRect(this.pos.x, this.pos.y, 8, 8)
       if (this.rays) {
 
         for (let ray of this.rays) {
