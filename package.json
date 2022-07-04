@@ -1,4 +1,5 @@
 {
+  "homepage": "https://s0upernova.github.io/raycasting/",
   "name": "my-webpack-project",
   "version": "1.0.0",
   "description": "My webpack project",
@@ -11,6 +12,7 @@
     "@webpack-cli/generators": "^2.5.0",
     "babel-loader": "^8.2.5",
     "css-loader": "^6.7.1",
+    "gh-pages": "^4.0.0",
     "html-webpack-plugin": "^5.5.0",
     "mini-css-extract-plugin": "^2.6.1",
     "prettier": "^2.7.1",
@@ -33,7 +35,9 @@
     "build:dev": "webpack --mode=development",
     "build:prod": "webpack --mode=production --node-env=production",
     "watch": "webpack --watch",
-    "serve": "webpack serve"
+    "serve": "webpack serve",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "author": "",
   "license": "ISC"
