@@ -1,18 +1,9 @@
 import { Vector } from '../../node_modules/vector2d/src/Vector';
 import { Ray } from './ray';
 var Particle = /** @class */ (function () {
-    function Particle(pos, angle) {
-        this.getVector = function (A) {
-            var V = {};
-            V.x = Math.cos(A);
-            V.y = Math.sin(A);
-            return new Vector(V.x, V.y);
-        };
-        this.dir = this.getVector(angle);
-        var canvas = document.getElementById('canvas');
-        var ctx = canvas.getContext("2d");
+    function Particle(ctx, width, height) {
         this.ctx = ctx;
-        this.pos = new Vector(canvas.width / 2, canvas.height / 2);
+        this.pos = new Vector(width / 2, height / 2);
         this.rays = [];
         for (var a = 0; a < 360; a += 10) {
             var ray = new Ray(this.pos, this.radians(a));
@@ -35,12 +26,9 @@ var Particle = /** @class */ (function () {
         this.pos.setX(x);
         this.pos.setY(y);
     };
-    Particle.prototype.lookAt = function (x, y) {
-        this.dir.x = x - this.pos.x;
-        this.dir.y = y - this.pos.y;
-        this.dir = this.dir.normalize();
-    };
     Particle.prototype.look = function (walls) {
+        // ? maybe make this an object with the keys being the walls,
+        // ? and the values being an array of the points.
         var arrOfClosests = [];
         for (var _i = 0, _a = this.rays; _i < _a.length; _i++) {
             var ray = _a[_i];
@@ -59,8 +47,15 @@ var Particle = /** @class */ (function () {
                     // wall.show()
                 }
             }
-            arrOfClosests.push({ closest: closest });
             if (this.ctx && closest) {
+                var key = closest.wall.id;
+                if (arrOfClosests.hasOwnProperty(key)) {
+                    arrOfClosests[key].push(closest);
+                }
+                else {
+                    arrOfClosests[key] = [closest];
+                }
+                // ray.show()
                 this.ctx.strokeStyle = 'grey';
                 this.ctx.beginPath();
                 this.ctx.moveTo(this.pos.x, this.pos.y);
@@ -72,33 +67,25 @@ var Particle = /** @class */ (function () {
         this.seeWalls(arrOfClosests);
     };
     Particle.prototype.seeWalls = function (arrOffClosests) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
+        var _a, _b, _c, _d;
         for (var i = 0; i < arrOffClosests.length; i++) {
-            // console.log(arrOffClosests[i])
-            //   // let wall = arrOffClosests[i].wall
-            for (var j = 0; j < arrOffClosests.length; j++) {
-                if (((_c = (_b = (_a = arrOffClosests[i]) === null || _a === void 0 ? void 0 : _a.closest) === null || _b === void 0 ? void 0 : _b.wall) === null || _c === void 0 ? void 0 : _c.id) === ((_f = (_e = (_d = arrOffClosests[j]) === null || _d === void 0 ? void 0 : _d.closest) === null || _e === void 0 ? void 0 : _e.wall) === null || _f === void 0 ? void 0 : _f.id)
-                    && ((_h = (_g = arrOffClosests[i]) === null || _g === void 0 ? void 0 : _g.closest) === null || _h === void 0 ? void 0 : _h.pt)
-                    && ((_k = (_j = arrOffClosests[j]) === null || _j === void 0 ? void 0 : _j.closest) === null || _k === void 0 ? void 0 : _k.pt)) {
-                    // this.ctx.fillStyle = "red"
-                    // this.ctx.fillRect(arrOffClosests[i].closest.pt.x, arrOffClosests[i].closest.pt.y, 8, 8)
-                    this.ctx.strokeStyle = "red";
-                    this.ctx.beginPath();
-                    // this.ctx.moveTo(100, 200)
-                    // this.ctx.lineTo(200, 100)
-                    this.ctx.moveTo(arrOffClosests[i].closest.pt.x, arrOffClosests[i].closest.pt.y);
-                    this.ctx.lineTo(arrOffClosests[j].closest.pt.x, arrOffClosests[j].closest.pt.y);
-                    this.ctx.stroke();
-                    this.ctx.closePath();
+            if (arrOffClosests === null || arrOffClosests === void 0 ? void 0 : arrOffClosests[i]) {
+                for (var j = 0; j < arrOffClosests[i].length; j++) {
+                    if (((_b = (_a = arrOffClosests === null || arrOffClosests === void 0 ? void 0 : arrOffClosests[i]) === null || _a === void 0 ? void 0 : _a[j]) === null || _b === void 0 ? void 0 : _b.pt) && ((_d = (_c = arrOffClosests === null || arrOffClosests === void 0 ? void 0 : arrOffClosests[i]) === null || _c === void 0 ? void 0 : _c[j + 1]) === null || _d === void 0 ? void 0 : _d.pt)) {
+                        this.ctx.strokeStyle = 'red';
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(arrOffClosests[i][j].pt.x, arrOffClosests[i][j].pt.y);
+                        this.ctx.lineTo(arrOffClosests[i][j + 1].pt.x, arrOffClosests[i][j + 1].pt.y);
+                        this.ctx.stroke();
+                        this.ctx.closePath();
+                    }
                 }
             }
         }
     };
     Particle.prototype.show = function () {
         if (this.ctx) {
-            this.ctx.beginPath();
-            this.ctx.arc(this.pos.x, this.pos.y, 8, 0, 2 * Math.PI);
-            this.ctx.fill();
+            // this.ctx.fillRect(this.pos.x, this.pos.y, 8, 8)
             if (this.rays) {
                 for (var _i = 0, _a = this.rays; _i < _a.length; _i++) {
                     var ray = _a[_i];

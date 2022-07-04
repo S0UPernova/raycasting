@@ -1,7 +1,6 @@
 var Draw = /** @class */ (function () {
     function Draw(canvas) {
-        this.ctx = canvas.getContext("2d");
-        this.canvas = canvas;
+        this.ctx = this.ctx;
     }
     Draw.prototype.prim = function () {
         function circle() {

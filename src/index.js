@@ -1,18 +1,16 @@
 // 2D Visibility
 // Ray Casting
 import { Boundary } from "./modules/boundary";
+// import { Ray } from "./modules/ray"
 import { Particle } from "./modules/particle";
 import { Draw } from "./modules/draw";
-import { Vector } from "../node_modules/vector2d/src/Vector";
 import "../index.css";
-var wall;
-var ray;
+// let wall: Boundary
+// let ray: Ray
 var particle;
 var mouseX = 1;
 var mouseY = 1;
 var walls = [];
-// let xoff: number = 0
-// let yoff: number = 0
 document.addEventListener("mousemove", function (event) {
     mouseX = event.clientX; // Gets Mouse X
     mouseY = event.clientY; // Gets Mouse Y
@@ -39,7 +37,7 @@ function setup() {
     // walls.push(new Boundary(300, 100, 300, 300, 10))
     // let rVector = new Vector(100, 200)
     // ray = new Ray(rVector, 0)
-    particle = new Particle(new Vector(100, 200), [1, 0]);
+    particle = new Particle(ctx, canvas.width, canvas.height);
 }
 function clearCanvas() {
     if (ctx) {
@@ -53,7 +51,7 @@ function clearCanvas() {
 setup();
 function draw() {
     for (var _i = 0, walls_1 = walls; _i < walls_1.length; _i++) {
-        var wall_1 = walls_1[_i];
+        var wall = walls_1[_i];
         // wall.show()
         particle.look(walls);
     }
@@ -62,18 +60,8 @@ function draw() {
         // wall.show()
         particle.update(mouseX, mouseY);
         particle.show();
-        // particle.lookAt(mouseX, mouseY)
-        // xoff += 0.01
-        // yoff += 0.01
-        // particle.look(wall)
-        // ray.show()
-        // ray.lookAt(mouseX, mouseY)
     }
-    // let pt = ray.cast(wall)
-    //   if (pt && ctx) {
-    //     ctx.fillStyle = 'white'
-    //     ctx.fillRect(pt.x, pt.y, 8, 8)
-    //   }
+    // framerate
     var timer = setTimeout(function () {
         clearCanvas();
         draw();
